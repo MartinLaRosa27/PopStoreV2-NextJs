@@ -1,6 +1,6 @@
+const Category = require("../models/Category");
 const Banner = require("../models/Banner");
 const Product = require("../models/Product");
-const Category = require("../models/Category");
 
 module.exports.primerasCategorias = async () => {
   let categoriasAlmacenadas = [];

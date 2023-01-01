@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
 const Context = createContext();
@@ -10,6 +10,17 @@ export const StateContext = ({ children }) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [qty, setQty] = useState(1);
   const [totalQuantities, setTotalQuantities] = useState(0);
+
+  // --------------------------------------------------------------------------
+  useEffect(() => {
+    try {
+      const cartLocal = JSON.parse(localStorage.getItem("cartItems"));
+      if (cartLocal.length !== cartItems.length) {
+        setCartItems(JSON.parse(localStorage.getItem("cartItems")));
+        setTotalQuantities(cartLocal.length);
+      }
+    } catch (e) {}
+  });
 
   // --------------------------------------------------------------------------
   const availableProducts = (product) => {
@@ -37,7 +48,8 @@ export const StateContext = ({ children }) => {
   };
 
   // --------------------------------------------------------------------------
-  const onAdd = (product, quantity) => {
+  const onAdd = async (product, quantity) => {
+    const auxCartItem = cartItems;
     const checkProductInCart = cartItems.find(
       (item) => item._id === product._id
     );
@@ -51,9 +63,11 @@ export const StateContext = ({ children }) => {
       }
     } else {
       product.quantity = quantity;
-      setCartItems([...cartItems, { ...product }]);
+      auxCartItem.push(product);
+      setCartItems(auxCartItem);
     }
     setQty(1);
+    localStorage.setItem("cartItems", JSON.stringify(auxCartItem));
     toast.success(`(x${quantity})"${product.name}" Agregado al Carrito`);
   };
 
@@ -65,6 +79,10 @@ export const StateContext = ({ children }) => {
     setTotalPrice(totalPrice - product.priceUSD);
     setCartItems(updatedCartItems);
     setTotalQuantities(0);
+    localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+    toast.error(
+      `(x${product.quantity})"${product.name}" Eliminado del Carrito`
+    );
   };
 
   // --------------------------------------------------------------------------

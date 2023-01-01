@@ -12,6 +12,12 @@ const {
   obtenerProductosPorCategoriaId,
 } = require("./controllers/productcController");
 const { obtenerTodasCategorias } = require("./controllers/categoryController");
+const {
+  crearUsuario,
+  autenticarUsuario,
+} = require("./controllers/userController");
+const { nuevaCompra } = require("./controllers/purchaseController");
+const { vefificarToken, auth } = require("./middleware/auth");
 
 // ------------------------------------------------------------------------------
 module.exports = () => {
@@ -34,6 +40,16 @@ module.exports = () => {
 
   // obtenerTodasCategorias
   router.get("/obtener-todas-categorias", obtenerTodasCategorias);
+
+  // userController:
+  router.post("/crear-usuario", crearUsuario);
+  router.post("/autenticar-usuario", autenticarUsuario);
+
+  // purchaseController:
+  router.post("/nueva-compra", auth, nuevaCompra);
+
+  // auth:
+  router.get("/vefificar-token", vefificarToken);
 
   return router;
 };
