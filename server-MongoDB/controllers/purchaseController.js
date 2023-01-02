@@ -3,7 +3,7 @@ const Purchase = require("../models/Purchase");
 module.exports.nuevaCompra = async (req, res) => {
   const { productsId } = req.body;
   try {
-    const purchase = new Purchase({ productsId, userId: req.user._id });
+    const purchase = new Purchase({ prodcutsId:productsId, userId: req.user._id });
     const resultado = await purchase.save();
     return res.status(200).json({
       status: "success",

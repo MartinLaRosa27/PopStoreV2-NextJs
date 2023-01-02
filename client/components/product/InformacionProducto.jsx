@@ -1,18 +1,27 @@
 import React, { useState } from "react";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { useStateContext } from "../../context/StateContext";
+import { vefificarToken } from "../../middleware/verificarToken";
 
 export const InformacionProducto = ({ selectedProduct }) => {
+  // -----------------------------------------------------------------------------
   const { incrQty, decrQty, qty, onAdd, finalizarCompra, availableProducts } =
     useStateContext();
 
+  // -----------------------------------------------------------------------------
   const [index, setIndex] = useState(0);
 
-  const finCompra = (product) => {
-    onAdd(product, qty);
-    finalizarCompra();
+  // -----------------------------------------------------------------------------
+  const finCompra = async (product) => {
+    if (!(await vefificarToken())) {
+      router.push("/login");
+    } else {
+      await onAdd(product, qty);
+      await finalizarCompra();
+    }
   };
 
+  // -----------------------------------------------------------------------------
   return (
     <div className="product-detail-container">
       <div>

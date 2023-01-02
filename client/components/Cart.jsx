@@ -5,7 +5,10 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { TiDeleteOutline } from "react-icons/ti";
+import { useRouter } from "next/router";
+import { usePurchaseContext } from "../context/PurchaseContext";
 import { useStateContext } from "../context/StateContext";
+import { vefificarToken } from "../middleware/verificarToken";
 
 export const Cart = () => {
   // -------------------------------------------------------------
@@ -17,9 +20,20 @@ export const Cart = () => {
     removeItem,
     finalizarCompra,
   } = useStateContext();
+  const { nuevaCompra } = usePurchaseContext();
+  const router = useRouter();
 
   // -------------------------------------------------------------
   const cartRef = useRef();
+
+  // -------------------------------------------------------------
+  const realizarCompra = async () => {
+    if (!(await vefificarToken())) {
+      router.push("/login");
+    } else {
+      await finalizarCompra(nuevaCompra);
+    }
+  };
 
   // -------------------------------------------------------------
   return (
@@ -99,7 +113,7 @@ export const Cart = () => {
                 <button
                   type="buttton"
                   className="btn"
-                  onClick={() => finalizarCompra()}
+                  onClick={() => realizarCompra()}
                 >
                   Finalizar Compra
                 </button>

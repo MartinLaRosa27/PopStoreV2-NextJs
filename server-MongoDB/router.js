@@ -49,7 +49,7 @@ module.exports = () => {
   router.post("/nueva-compra", auth, nuevaCompra);
 
   // auth:
-  router.get("/vefificar-token", vefificarToken);
+  router.put("/vefificar-token", vefificarToken);
 
   return router;
 };

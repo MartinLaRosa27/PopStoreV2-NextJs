@@ -86,7 +86,7 @@ export const StateContext = ({ children }) => {
   };
 
   // --------------------------------------------------------------------------
-  const finalizarCompra = () => {
+  const finalizarCompra = (nuevaCompra) => {
     Swal.fire({
       title: "¿Desea finalizar la compra?",
       text: `El valor es de ${totalPrice.toFixed(2)}`,
@@ -95,17 +95,25 @@ export const StateContext = ({ children }) => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Si!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         Swal.fire(
           "Compra realizada",
           "Se realizo la compra correctamente",
           "success"
         );
+        // Registrar compra en BD:
+        const productsId = [];
+        const finalCart = JSON.parse(localStorage.getItem("cartItems"));
+        for (let i = 0; i < finalCart.length; i++) {
+          productsId.push(finalCart[i]._id);
+        }
+        await nuevaCompra(productsId);
         setCartItems([]);
         setTotalPrice(0);
         setQty(1);
         setTotalQuantities(0);
+        localStorage.setItem("cartItems", []);
       }
     });
   };
